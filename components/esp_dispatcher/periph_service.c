@@ -146,6 +146,14 @@ void *periph_service_get_data(periph_service_handle_t handle)
     return impl->user_data;
 }
 
+/* add by ylm for sventu*/
+void *periph_service_get_callback_data(periph_service_handle_t handle)
+{
+    AUDIO_NULL_CHECK(TAG, handle, return NULL);
+    periph_service_impl_t *impl = (periph_service_impl_t *) handle;
+    return impl->user_cb_ctx;
+}
+
 esp_err_t periph_service_ioctl(periph_service_handle_t handle, void *ioctl_handle, int cmd, int value)
 {
     periph_service_impl_t *impl = (periph_service_impl_t *) handle;

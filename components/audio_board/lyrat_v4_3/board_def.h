@@ -27,7 +27,7 @@
 
 #include "driver/touch_pad.h"
 
-#define SDCARD_OPEN_FILE_NUM_MAX  5
+#define SDCARD_OPEN_FILE_NUM_MAX  10    /*change by ylm for music box*/
 #define SDCARD_INTR_GPIO          GPIO_NUM_34
 
 #define BUTTON_REC_ID             GPIO_NUM_36

@@ -199,11 +199,22 @@ static void retry_timer_callback(void *timer_arg)
     wifi_service_connect(serv_handle);
 }
 
+/*add by ylm for retry 100 times*/
+#ifndef MIN
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#endif
+
 static void wifi_task(void *pvParameters)
 {
     periph_service_handle_t serv_handle = (periph_service_handle_t)pvParameters;
     wifi_service_t *serv = periph_service_get_data(serv_handle);
     wifi_config_t wifi_cfg = {0};
+
+	/* changed by ylm 
+		1. setup first can use ssid from flash
+		2. if no ssid in flash, use default ssid
+	*/
+#ifndef CONFIG_WIFI_SSID
     if (ESP_OK == esp_wifi_get_config(WIFI_IF_STA, &wifi_cfg)) {
         if (wifi_cfg.sta.ssid[0] != 0) {
             ESP_LOGI(TAG, "Connect to stored Wi-Fi SSID:%s", wifi_cfg.sta.ssid);
@@ -217,6 +228,32 @@ static void wifi_task(void *pvParameters)
     wifi_setting_item_t *item;
 
     wifi_sta_setup(pvParameters);
+#else
+    wifi_sta_setup(pvParameters);
+
+    if (ESP_OK != esp_wifi_get_config(WIFI_IF_STA, &wifi_cfg)) {
+		wifi_cfg.sta.ssid[0] = 0;
+        ESP_LOGE(TAG, "No wifi SSID stored!");
+    }
+
+    if (wifi_cfg.sta.ssid[0] == 0) {
+		ESP_LOGE(TAG, "Wi-Fi SSID in storage is empty, use default!");		
+		strncpy((char *)&wifi_cfg.sta.ssid, CONFIG_WIFI_SSID, strlen(CONFIG_WIFI_SSID));
+    	strncpy((char *)&wifi_cfg.sta.password, CONFIG_WIFI_PASSWORD, strlen(CONFIG_WIFI_PASSWORD));
+    }
+	
+	ESP_LOGE(TAG, "Connect to Wi-Fi SSID:%s", wifi_cfg.sta.ssid);
+	ESP_LOGE(TAG, "                 PASS:%s", wifi_cfg.sta.password);
+
+	wifi_service_set_sta_info(serv_handle, &wifi_cfg);
+
+    wifi_task_msg_t wifi_msg = {0};
+    bool task_run = true;
+    periph_service_event_t cb_evt = {0};
+    wifi_setting_item_t *item;
+
+#endif
+
     configure_wifi_sta_mode(&wifi_cfg);
     ESP_ERROR_CHECK(esp_wifi_start());
 
@@ -268,18 +305,18 @@ static void wifi_task(void *pvParameters)
                 }
                 if (wifi_msg.type == WIFI_SERV_EVENT_DISCONNECTED) {
                     if ((serv->reason != WIFI_SERV_STA_BY_USER)
-                        && (serv->reason != WIFI_SERV_STA_UNKNOWN)) {
+						  /*&& (serv->reason != WIFI_SERV_STA_UNKNOWN)*/) {/*change by ylm: retry for unknown reason*/
                         // reconnect the SSID
-                        if (serv->retry_times < 10) {
+                        if (serv->retry_times < 100) {/*change by ylm: retry 100 times*/
                             serv->retry_times++;
                             serv->retrying = true;
-                            esp_timer_start_once(serv->retry_timer, (uint64_t)serv->retry_times * 1000 * 1000 * 2);
+                            esp_timer_start_once(serv->retry_timer, (uint64_t)MIN(serv->retry_times * 1000 * 1000 * 2, 10 * 1000 * 1000 * 2));/*change by ylm: when retry times>10, wait 20s*/
                         } else {
                             ESP_LOGW(TAG, "Reconnect wifi failed, retry times is %d", serv->retry_times);
                             serv->retrying = false;
                         }
                         ESP_LOGW(TAG, "Disconnect reason %d", serv->reason);
-                        continue;
+                        if (serv->retry_times>1) continue; /*change by ylm: send msg first time*/
                     }
                 }
                 periph_service_callback(serv_handle, &cb_evt);

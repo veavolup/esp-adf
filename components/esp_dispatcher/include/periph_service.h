@@ -170,6 +170,16 @@ esp_err_t periph_service_set_data(periph_service_handle_t handle, void *data);
  */
 void *periph_service_get_data(periph_service_handle_t handle);
 
+/* add by ylm for sventu*/
+/**
+ * brief      Get callback data by specific peripheral service instance
+ *
+ * @param[in] handle   The peripheral service instance
+ *
+ * @return A pointer to callback data
+ */
+void *periph_service_get_callback_data(periph_service_handle_t handle);
+
 /**
  * brief      In/out control by peripheral service instance
  *

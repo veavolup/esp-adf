@@ -83,6 +83,12 @@ typedef enum {
     ACTION_EXE_TYPE_DUER_CONNECT                           = 0x4008,
     ACTION_EXE_TYPE_DUER_MAX                               = 0x4FFF,
 
+	ACTION_EXE_TYPE_CON_CARD_CHECK                         = 0x5000,/* add by ylm for sventu*/
+	ACTION_EXE_TYPE_CON_WIFI_CONNECTED                     = 0x5001,
+	ACTION_EXE_TYPE_CON_WIFI_DISCONNECTED                  = 0x5002,	
+	ACTION_EXE_TYPE_CON_VOICE_INPUT_OFF                    = 0x5003,
+	ACTION_EXE_TYPE_CON_VOICE_INPUT_ON                     = 0x5004,
+	ACTION_EXE_TYPR_CON_MAX                                = 0x5FFF,
     ACTION_EXE_TYPE_CUSTOMER_BASE                          = 0x80000,
 } action_exe_type_t;
 

@@ -123,9 +123,12 @@ static esp_err_t _fatfs_open(audio_element_handle_t self)
         fatfs->file = fopen(path, "w+");
         fatfs->w_type =  get_type(path);
         if (fatfs->file && STREAM_TYPE_WAV == fatfs->w_type) {
-            wav_header_t info = {0};
-            fwrite(&info, 1, sizeof(wav_header_t), fatfs->file);
-            fsync(fileno(fatfs->file));
+			if (info.reserve_data.user_data_0)/*add by ylm for not add head for wav sometimes*/
+			{
+	            wav_header_t info = {0};
+	            fwrite(&info, 1, sizeof(wav_header_t), fatfs->file);
+	            fsync(fileno(fatfs->file));
+			}
         } else if (fatfs->file && (STREAM_TYPE_AMR == fatfs->w_type)) {
             fwrite("#!AMR\n", 1, 6, fatfs->file);
             fsync(fileno(fatfs->file));
@@ -197,10 +200,13 @@ static int _fatfs_process(audio_element_handle_t self, char *in_buffer, int in_l
 static esp_err_t _fatfs_close(audio_element_handle_t self)
 {
     fatfs_stream_t *fatfs = (fatfs_stream_t *)audio_element_getdata(self);
+	audio_element_info_t info;
+	audio_element_getinfo(self, &info);
 
     if (AUDIO_STREAM_WRITER == fatfs->type
         && fatfs->file
-        && STREAM_TYPE_WAV == fatfs->w_type) {
+        && STREAM_TYPE_WAV == fatfs->w_type
+        && info.reserve_data.user_data_0) {   /*add by ylm for not add head for wav sometimes*/
         wav_header_t *wav_info = (wav_header_t *) audio_malloc(sizeof(wav_header_t));
 
         AUDIO_MEM_CHECK(TAG, wav_info, return ESP_ERR_NO_MEM);

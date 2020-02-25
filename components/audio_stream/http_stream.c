@@ -604,7 +604,8 @@ static int _http_process(audio_element_handle_t self, char *in_buffer, int in_le
     int w_size = 0;
     if (r_size > 0) {
         w_size = audio_element_output(self, in_buffer, r_size);
-        audio_element_multi_output(self, in_buffer, r_size, 0);
+/*change by ylm for bugfix*/
+        audio_element_multi_output(self, in_buffer, r_size, portMAX_DELAY);
     } else {
         w_size = r_size;
     }
@@ -642,10 +643,20 @@ static esp_err_t _http_close(audio_element_handle_t self)
     }
     if (AEL_STATE_PAUSED != audio_element_get_state(self)) {
         audio_element_report_pos(self);
+/*change by ylm to avoid stack error issue*/
+#if 0
         audio_element_info_t info = {0};
         audio_element_getinfo(self, &info);
         info.byte_pos = 0;
         audio_element_setinfo(self, &info);
+#else
+        audio_element_info_t *info = audio_calloc(1, sizeof(audio_element_info_t));
+		AUDIO_MEM_CHECK(TAG, info, return ESP_FAIL);
+        audio_element_getinfo(self, info);
+        info->byte_pos = 0;
+        audio_element_setinfo(self, info);
+		audio_free(info);
+#endif
     }
     return ESP_OK;
 }
