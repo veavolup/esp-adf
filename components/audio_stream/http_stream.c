@@ -644,7 +644,7 @@ static esp_err_t _http_close(audio_element_handle_t self)
     if (AEL_STATE_PAUSED != audio_element_get_state(self)) {
         audio_element_report_pos(self);
 /*change by ylm to avoid stack error issue*/
-#if 0
+#if 1
         audio_element_info_t info = {0};
         audio_element_getinfo(self, &info);
         info.byte_pos = 0;
