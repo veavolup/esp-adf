@@ -242,8 +242,8 @@ static void wifi_task(void *pvParameters)
     	strncpy((char *)&wifi_cfg.sta.password, CONFIG_WIFI_PASSWORD, strlen(CONFIG_WIFI_PASSWORD));
     }
 	
-	ESP_LOGE(TAG, "Connect to Wi-Fi SSID:%s", wifi_cfg.sta.ssid);
-	ESP_LOGE(TAG, "                 PASS:%s", wifi_cfg.sta.password);
+	ESP_LOGI(TAG, "Connect to Wi-Fi SSID:%s", wifi_cfg.sta.ssid);
+//	ESP_LOGI(TAG, "                 PASS:%s", wifi_cfg.sta.password);
 
 	wifi_service_set_sta_info(serv_handle, &wifi_cfg);
 
@@ -531,3 +531,4 @@ periph_service_handle_t wifi_service_create(wifi_service_config_t *config)
 
     return wifi;
 }
+
