@@ -57,14 +57,17 @@ extern audio_hal_func_t AUDIO_CODEC_ES8388_DEFAULT_HANDLE;
         },                                              \
 };
 
-#define INPUT_KEY_NUM     6
+#define INPUT_KEY_NUM     1
 
 #define INPUT_KEY_DEFAULT_INFO() {                      \
      {                                                  \
         .type = PERIPH_ID_BUTTON,                       \
         .user_id = INPUT_KEY_USER_ID_REC,               \
         .act_id = BUTTON_REC_ID,                        \
-    },                                                  \
+    }                                                   \
+}
+#if 0
+,                                                  \
     {                                                   \
         .type = PERIPH_ID_BUTTON,                       \
         .user_id = INPUT_KEY_USER_ID_MODE,              \
@@ -91,5 +94,6 @@ extern audio_hal_func_t AUDIO_CODEC_ES8388_DEFAULT_HANDLE;
         .act_id = BUTTON_VOLDOWN_ID,                    \
     }                                                   \
 }
+#endif
 
 #endif
