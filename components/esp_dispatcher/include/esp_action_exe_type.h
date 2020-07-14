@@ -70,6 +70,8 @@ typedef enum {
     ACTION_EXE_TYPE_DISPLAY_BATTERY_CHARGING               = 0x3007,
     ACTION_EXE_TYPE_DISPLAY_BATTERY_FULL                   = 0x3008,
     ACTION_EXE_TYPE_DISPLAY_BATTERY_DISCHARGING            = 0x3009,
+    ACTION_EXE_TYPE_DISPLAY_TEST_START                     = 0x300A,
+    ACTION_EXE_TYPE_DISPLAY_TEST_STOP                      = 0x300B,
     ACTION_EXE_TYPE_DISPLAY_MAX                            = 0x3FFF,
 
     ACTION_EXE_TYPE_DUER_BASE                              = 0x4000,
@@ -88,7 +90,13 @@ typedef enum {
 	ACTION_EXE_TYPE_CON_WIFI_DISCONNECTED                  = 0x5002,	
 	ACTION_EXE_TYPE_CON_VOICE_INPUT_OFF                    = 0x5003,
 	ACTION_EXE_TYPE_CON_VOICE_INPUT_ON                     = 0x5004,
+	ACTION_EXE_TYPE_CON_CLEAR_ITEM                         = 0x5005,
 	ACTION_EXE_TYPR_CON_MAX                                = 0x5FFF,
+
+	ACTION_EXE_TYPE_TCP_CLIENT_START                       = 0x6000,
+	ACTION_EXE_TYPE_TCP_CLIENT_STOP                        = 0x6001,
+	ACTION_EXE_TYPE_TCP_CLIENT_ITEM                        = 0x6002,
+	ACTION_EXE_TYPE_TCP_CLIENT_MAX                         = 0x6FFF,
     ACTION_EXE_TYPE_CUSTOMER_BASE                          = 0x80000,
 } action_exe_type_t;
 
