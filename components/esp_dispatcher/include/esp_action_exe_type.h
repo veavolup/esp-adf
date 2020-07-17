@@ -96,6 +96,8 @@ typedef enum {
 	ACTION_EXE_TYPE_TCP_CLIENT_START                       = 0x6000,
 	ACTION_EXE_TYPE_TCP_CLIENT_STOP                        = 0x6001,
 	ACTION_EXE_TYPE_TCP_CLIENT_ITEM                        = 0x6002,
+	ACTION_EXE_TYPE_TCP_CLIENT_WIFI_CONNECTED              = 0x6003,
+	ACTION_EXE_TYPE_TCP_CLIENT_WIFI_DISCONNECTED           = 0x6004,
 	ACTION_EXE_TYPE_TCP_CLIENT_MAX                         = 0x6FFF,
     ACTION_EXE_TYPE_CUSTOMER_BASE                          = 0x80000,
 } action_exe_type_t;
